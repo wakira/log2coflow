@@ -29,7 +29,7 @@ class YarnMapReduceLogParser(input : Iterator[String]) extends LogParser(input) 
         containerToHost.put(container, host)
       case Some(AttemptAssignmentLine(container, attempt)) => attemptToContainer.put(attempt, container)
       case Some(DataFetchLine(size, source)) =>
-        containerFetchFromAttempt.append(new ContainerFetchFromAttempt(currentContainer, size, source))
+        containerFetchFromAttempt.append(new ContainerFetchFromAttempt(source, size, currentContainer))
       case None => // DO NOTHING
       case _ => assert(false)
     }
@@ -37,8 +37,8 @@ class YarnMapReduceLogParser(input : Iterator[String]) extends LogParser(input) 
 
   override def buildCoflow = {
     def mapToFlow(c: ContainerFetchFromAttempt) =
-      new FlowDescription(containerToHost.get(c.source).get,
-        containerToHost.get(attemptToContainer.get(c.dest).get).get, c.size)
+      new FlowDescription(containerToHost.get(attemptToContainer.get(c.source).get).get,
+        containerToHost.get(c.dest).get, c.size)
 
     new CoflowDescription(containerFetchFromAttempt.map(mapToFlow).toList
       .filter(f => f.source != f.dest)) // filter out local data move

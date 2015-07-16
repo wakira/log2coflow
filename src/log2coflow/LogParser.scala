@@ -9,6 +9,7 @@ abstract class LogParser(input : Iterator[String]) {
   def run() = {
     // FIXME might require preprocessing to seperate different coflows in one log (see ApplciationDescription)
     input.foreach(processLine)
+    buildCoflow
   }
 
   // helper function that try to match pattern using matchers for line l
@@ -21,4 +22,5 @@ abstract class LogParser(input : Iterator[String]) {
       }
 
   def processLine(l : String) : Unit
+  def buildCoflow : CoflowDescription
 }

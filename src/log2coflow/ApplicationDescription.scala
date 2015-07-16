@@ -6,6 +6,6 @@ package log2coflow
  * in an hadoop applicationId (a.k.a in an aggregation log)
  * Created by wakira on 15-7-15.
  */
+// Deprecated
 class ApplicationDescription {
-
 }

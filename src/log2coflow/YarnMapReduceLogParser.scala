@@ -39,6 +39,8 @@ class YarnMapReduceLogParser(input : Iterator[String]) extends LogParser(input) 
     def mapToFlow(c: ContainerFetchFromAttempt) =
       new FlowDescription(containerToHost.get(c.source).get,
         containerToHost.get(attemptToContainer.get(c.dest).get).get, c.size)
-    new CoflowDescription(containerFetchFromAttempt.map(mapToFlow).toList)
+
+    new CoflowDescription(containerFetchFromAttempt.map(mapToFlow).toList
+      .filter(f => f.source != f.dest)) // filter out local data move
   }
 }

@@ -20,6 +20,7 @@ class YarnMapReduceLogParser(input : Iterator[String]) extends LogParser(input) 
   private var containerToHost : mutable.HashMap[String, String] = new mutable.HashMap[String, String]()
   private var attemptToContainer : mutable.HashMap[String, String] = new mutable.HashMap[String, String]()
   private var containerFetchFromAttempt : mutable.ListBuffer[ContainerFetchFromAttempt] = new ListBuffer
+  private var rawFlowCount = 0
 
   def processLine(l : String) = {
     val parsedLine = tryMatchers(lineMatchers, l)
@@ -36,9 +37,11 @@ class YarnMapReduceLogParser(input : Iterator[String]) extends LogParser(input) 
   }
 
   override def buildCoflow = {
-    def mapToFlow(c: ContainerFetchFromAttempt) =
+    def mapToFlow(c: ContainerFetchFromAttempt) = {
+      rawFlowCount += 1 // rawFlowCount will count flows that has same host as dest and source, no problem
       new FlowDescription(containerToHost.get(attemptToContainer.get(c.source).get).get,
-        containerToHost.get(c.dest).get, c.size)
+        containerToHost.get(c.dest).get, c.size, rawFlowCount)
+    }
 
     new CoflowDescription(containerFetchFromAttempt.map(mapToFlow).toList
       .filter(f => f.source != f.dest)) // filter out local data move

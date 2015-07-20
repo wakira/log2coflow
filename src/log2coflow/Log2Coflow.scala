@@ -11,6 +11,6 @@ object Log2Coflow {
     println("Nodes:")
     coflow.nodes.foreach(println)
     println("Flows:")
-    coflow.flows.foreach(x => println("S:"+x.source+" D:"+x.dest+" s:"+x.size.toString))
+    coflow.flows.foreach(x => println("S:"+x.source+" D:"+x.dest+" s:"+x.size.toString + " UID:"+x.uid.toString))
   }
 }

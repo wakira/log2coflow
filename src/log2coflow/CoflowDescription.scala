@@ -11,7 +11,7 @@ class CoflowDescription(val flows: List[FlowDescription]) {
     nodes_setup.toSet // convert back to immutable
   }
 
-  val length = flows.maxBy(_.size)
+  val length = if (flows.nonEmpty) flows.maxBy(_.size) else 0
   val width = flows.length
   val size = flows.foldLeft(0)((acc, f) => acc + f.size)
 }
